@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>카카오맵을 이용한 현재 위치 표시</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        #map {
+            width: 600px;
+            height: 400px;
+            border: 2px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <!-- 카카오 맵 SDK 로드 -->
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=a205cc9729d03619e9c955fc4606146e"></script>
+    <script>
+        // 카카오 맵 초기화
+        kakao.maps.load(function () {
+            // 현재 위치 가져오기
+            navigator.geolocation.getCurrentPosition(function (position) {
+                // 현재 위치의 위도와 경도
+                var lat = position.coords.latitude;
+                var lng = position.coords.longitude;
+
+                // 지도를 그리고 현재 위치에 마커 표시
+                var container = document.getElementById('map');
+                var options = {
+                    center: new kakao.maps.LatLng(lat, lng),
+                    level: 3
+                };
+                var map = new kakao.maps.Map(container, options);
+                var markerPosition = new kakao.maps.LatLng(lat, lng);
+                var marker = new kakao.maps.Marker({
+                    position: markerPosition
+                });
+                marker.setMap(map);
+
+                // 지도 컨트롤 추가
+                var zoomControl = new kakao.maps.ZoomControl();
+                map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+
+                // 이벤트 처리기 추가
+                kakao.maps.event.addListener(map, 'center_changed', function () {
+                    var center = map.getCenter();
+                    console.log('중심 위치:', center);
+                });
+
+                kakao.maps.event.addListener(map, 'zoom_changed', function () {
+                    var zoomLevel = map.getLevel();
+                    console.log('줌 레벨:', zoomLevel);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>드래그 이벤트 처리</title>
+    <style>
+        #name {
+            font-size: 24px;
+            user-select: none; /* 텍스트 선택 방지 */
+        }
+        #status {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div id="name" draggable="true">유동기</div>
+    <h3></h3>
+    <div id="status">드래그 가능</div>
+
+    <script>
+        const nameElement = document.getElementById('name');
+        const statusElement = document.getElementById('status');
+        let dragCount = 1;
+
+        nameElement.addEventListener('dragstart', (event) => {
+            dragCount = 1;
+            statusElement.textContent = `드래그시작[${dragCount}]`;
+        });
+
+        nameElement.addEventListener('drag', (event) => {
+            if (event.clientX !== 0 && event.clientY !== 0) { // 마우스가 이동중인 경우에만 증가
+                dragCount++;
+                statusElement.textContent = `드래그시작[${dragCount}]`;
+            }
+        });
+
+        nameElement.addEventListener('dragend', () => {
+            statusElement.textContent = '드래그 가능';
+        });
+    </script>
+</body>
+</html>

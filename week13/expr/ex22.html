@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>현재 위치에서 숙명여대까지 거리 계산</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        #distance-box {
+            border: 2px solid #ccc;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            font-size: 18px;
+        }
+        .coordinates {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="distance-box">
+        <h1>현재 위치에서 숙명여대까지의 거리</h1>
+        <div class="coordinates">
+            <p id="sookmyung-coordinates">숙명여대 좌표: 계산 중...</p>
+            <p id="current-coordinates">현재 위치 좌표: 계산 중...</p>
+        </div>
+        <p id="distance">계산 중...</p>
+    </div>
+
+    <script>
+        // 숙명여대의 좌표
+        const SookmyungLat = 37.5459582;
+        const SookmyungLon = 126.9625;
+
+        // 거리 계산 함수
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // km
+            const dLat = (lat2 - lat1).toRad();
+            const dLon = (lon2 - lon1).toRad();
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        // Degree to Radian 변환
+        Number.prototype.toRad = function () {
+            return this * Math.PI / 180;
+        }
+
+        // 현재 위치 가져오기 및 거리 계산
+        function getLocationAndCalculateDistance() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showDistance, showError);
+            } else {
+                document.getElementById('distance').textContent = 'Geolocation은 이 브라우저에서 지원되지 않습니다.';
+            }
+        }
+
+        function showDistance(position) {
+            const currentLat = position.coords.latitude;
+            const currentLon = position.coords.longitude;
+
+            // 현재 위치 좌표 표시
+            document.getElementById('current-coordinates').textContent = `현재 위치 좌표: 위도 ${currentLat.toFixed(6)}, 경도 ${currentLon.toFixed(6)}`;
+
+            // 숙명여대 좌표 표시
+            document.getElementById('sookmyung-coordinates').textContent = `숙명여대 좌표: 위도 ${SookmyungLat}, 경도 ${SookmyungLon}`;
+
+            // 거리 계산 및 표시
+            const distance = calculateDistance(currentLat, currentLon, SookmyungLat, SookmyungLon);
+            document.getElementById('distance').textContent = `현재 위치에서 숙명여대까지의 거리는 약 ${distance.toFixed(2)} km 입니다.`;
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    document.getElementById('distance').textContent = '사용자가 Geolocation 요청을 거부하였습니다.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    document.getElementById('distance').textContent = '위치 정보를 사용할 수 없습니다.';
+                    break;
+                case error.TIMEOUT:
+                    document.getElementById('distance').textContent = '위치 정보를 가져오는 요청이 시간 초과되었습니다.';
+                    break;
+                case error.UNKNOWN_ERROR:
+                    document.getElementById('distance').textContent = '알 수 없는 오류가 발생하였습니다.';
+                    break;
+            }
+        }
+
+        // 페이지 로드 시 거리 계산 함수 호출
+        window.onload = getLocationAndCalculateDistance;
+    </script>
+</body>
+</html>

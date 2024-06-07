@@ -1,0 +1,50 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>방문 히스토리</title>
+</head>
+<body>
+    <h1>방문 히스토리</h1>
+    <ul id="historyList"></ul>
+    <button onclick="clearHistory()">방문 기록 삭제</button>
+
+    <script>
+        // 방문 히스토리를 저장하는 함수
+        function saveHistory(url) {
+            if (!localStorage.getItem('history')) {
+                localStorage.setItem('history', JSON.stringify([]));
+            }
+            let history = JSON.parse(localStorage.getItem('history'));
+            history.push(url);
+            localStorage.setItem('history', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            let history = JSON.parse(localStorage.getItem('history'));
+            let historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            history.forEach(function(url) {
+                let li = document.createElement('li');
+                li.textContent = url;
+                historyList.appendChild(li);
+            });
+        }
+
+        //기록 삭제 함수
+        function clearHistory() {
+            localStorage.removeItem('history');
+            renderHistory();
+        }
+
+        // 페이지 로드 시 기록 출력
+        window.onload = function() {
+            renderHistory();
+        };
+    </script>
+</body>
+</html>

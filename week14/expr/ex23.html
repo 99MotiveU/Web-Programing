@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>웹 사이트 방문 히스토리</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+  #history-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  #history-list li {
+    margin-bottom: 5px;
+  }
+</style>
+</head>
+<body>
+<h1>웹 사이트 방문 히스토리</h1>
+<button onclick="addHistory()">사이트 저장</button>
+<button onclick="showHistory()">히스토리 보기</button>
+<button onclick="clearHistory()">히스토리 삭제</button>
+<ul id="history-list"></ul>
+
+<script>
+function addHistory() {
+  var currentUrl = window.location.href;
+  var history = localStorage.getItem('webHistory');
+  var historyArray = history ? JSON.parse(history) : [];
+  historyArray.push(currentUrl);
+  localStorage.setItem('webHistory', JSON.stringify(historyArray));
+  alert('사이트가 저장되었습니다.');
+}
+
+function showHistory() {
+  var history = localStorage.getItem('webHistory');
+  var historyList = document.getElementById('history-list');
+  historyList.innerHTML = '';
+  if (history) {
+    var historyArray = JSON.parse(history);
+    historyArray.forEach(function(siteUrl) {
+      var li = document.createElement('li');
+      li.textContent = siteUrl;
+      historyList.appendChild(li);
+    });
+  } else {
+    alert('방문 기록이 없습니다.');
+  }
+}
+
+function clearHistory() {
+  localStorage.removeItem('webHistory');
+  document.getElementById('history-list').innerHTML = '';
+  alert('방문 기록이 삭제되었습니다.');
+}
+</script>
+</body>
+</html>

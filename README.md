@@ -1,2 +1,4 @@
-# Web-Programing #HTML5
-주차별 HTML5 실습 미니 프로젝트
+# Web-Programing
+주차별 HTML5 실습 & Mini Projects
+
+#HTML5  #CSS3
